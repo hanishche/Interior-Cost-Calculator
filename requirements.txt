@@ -4,4 +4,4 @@ numpy
 openpyxl
 st_aggrid
 mysql-connector-python
-mysql-connector
+
