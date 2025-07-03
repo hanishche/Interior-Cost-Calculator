@@ -1,9 +1,8 @@
 import streamlit as st
-import os
-import json
 import pandas as pd
 from data.material_costs import material_costs, material_costs_hdmr, material_costs_mdf, laminate
 from utils.calculations import shutter_area, side_area, top_bottom_area, back_panel_area, shelf_area
+from utils.db import save_project, load_project
 
 st.set_page_config(initial_sidebar_state="collapsed")
 hide_sidebar_style = """
@@ -18,20 +17,25 @@ if st.button("🏠 Home"):
     st.session_state.pop("project", None)
     st.switch_page("main.py")
 
-# Load project data
+# Add Back button to go to Project Input page
+if st.button("⬅️ Previous"):
+    st.switch_page("pages/01_ProjectInput.py")
+
+# Add Back button to go to Summary page
+if st.button("Next ➡️"):
+    st.switch_page("pages/03_Summary.py")
+
+# Load project data from DB
 user = st.session_state.get("username")
 project = st.session_state.get("project")
 if not user or not project:
     st.error("User or project not found. Please login and select a project.")
     st.stop()
 
-project_file = os.path.join("projects", user, f"{project}.json")
-if not os.path.exists(project_file):
-    st.error("Project file not found.")
+project_data = load_project(user, project)
+if not project_data:
+    st.error("Project data not found in database.")
     st.stop()
-
-with open(project_file, "r") as f:
-    project_data = json.load(f)
 
 # --- Load existing materials if present ---
 existing_materials = project_data.get("element_materials", {})
@@ -57,15 +61,11 @@ for room, elements in project_data.get("rooms", {}).items():
                 for section_name, section in el.items():
                     with st.expander(f"{el_name} - {section_name}", expanded=True):
                         key_prefix = f"{room}|{el_name}|{section_name}"
-                        # Side-by-side layout for all material properties
                         st.markdown("**Material Selection**")
                         mat_labels = [("shutter", "Shutter"), ("carcus", "Carcus"), ("laminate", "Laminate")]
                         prop_labels = ["Type", "Grade", "Brand", "Model", "Thickness", "Price/sft"]
                         cols = st.columns(len(prop_labels))
                         for idx, (mat, mat_label) in enumerate(mat_labels):
-                            # For each material, collect all properties in a row
-                            values = []
-                            # Type
                             if mat == "laminate":
                                 laminate_type = cols[0].selectbox(
                                     f"{mat_label} Type",
@@ -75,12 +75,9 @@ for room, elements in project_data.get("rooms", {}).items():
                                         element_materials.get(key_prefix, {}).get(mat, {}).get("type", list(laminate["Laminate"].keys())[0])
                                     ) if element_materials.get(key_prefix, {}).get(mat, {}).get("type", list(laminate["Laminate"].keys())[0]) in list(laminate["Laminate"].keys()) else 0
                                 )
-                                # Grade not used for laminate
-                                values.append(laminate_type)
-                                values.append("-")
-                                # Brand not used for laminate
-                                values.append("-")
-                                values.append("-")
+                                cols[1].markdown("-")
+                                cols[2].markdown("-")
+                                cols[3].markdown("-")
                                 laminate_thickness = cols[4].selectbox(
                                     f"{mat_label} Thickness",
                                     list(laminate["Laminate"][laminate_type].keys()),
@@ -89,10 +86,7 @@ for room, elements in project_data.get("rooms", {}).items():
                                         element_materials.get(key_prefix, {}).get(mat, {}).get("thickness", list(laminate["Laminate"][laminate_type].keys())[0])
                                     ) if element_materials.get(key_prefix, {}).get(mat, {}).get("thickness", list(laminate["Laminate"][laminate_type].keys())[0]) in list(laminate["Laminate"][laminate_type].keys()) else 0
                                 )
-                                values.append("-")
                                 laminate_rate = laminate["Laminate"][laminate_type][laminate_thickness]
-                                values.append(laminate_thickness)
-                                values.append(laminate_rate)
                                 cols[5].info(f"₹{laminate_rate}/sft")
                                 element_materials.setdefault(key_prefix, {})[mat] = {
                                     "type": laminate_type,
@@ -110,46 +104,62 @@ for room, elements in project_data.get("rooms", {}).items():
                                 )
                                 df = material_type_map[mat_type]
                                 grades = df["Grade"].dropna().unique().tolist()
-                                grade = cols[1].selectbox(
-                                    f"{mat_label} Grade",
-                                    grades,
-                                    key=f"{key_prefix}_{mat}_grade",
-                                    index=grades.index(
-                                        element_materials.get(key_prefix, {}).get(mat, {}).get("grade", grades[0])
-                                    ) if element_materials.get(key_prefix, {}).get(mat, {}).get("grade", grades[0]) in grades else 0
-                                )
-                                filtered_df = df[df["Grade"] == grade]
+                                if not grades or (mat_type == "MDF" and (len(grades) == 1 and (grades[0] == "" or pd.isna(grades[0])))):
+                                    grade = "-"
+                                    cols[1].markdown("-")
+                                else:
+                                    grade = cols[1].selectbox(
+                                        f"{mat_label} Grade",
+                                        grades,
+                                        key=f"{key_prefix}_{mat}_grade",
+                                        index=grades.index(
+                                            element_materials.get(key_prefix, {}).get(mat, {}).get("grade", grades[0])
+                                        ) if element_materials.get(key_prefix, {}).get(mat, {}).get("grade", grades[0]) in grades else 0
+                                    )
+                                filtered_df = df[df["Grade"] == grade] if grade != "-" else df
                                 brands = filtered_df["Brand"].dropna().unique().tolist()
-                                brand = cols[2].selectbox(
-                                    f"{mat_label} Brand",
-                                    brands,
-                                    key=f"{key_prefix}_{mat}_brand",
-                                    index=brands.index(
-                                        element_materials.get(key_prefix, {}).get(mat, {}).get("brand", brands[0])
-                                    ) if element_materials.get(key_prefix, {}).get(mat, {}).get("brand", brands[0]) in brands else 0
-                                )
-                                filtered_df = filtered_df[filtered_df["Brand"] == brand]
+                                if brands:
+                                    brand = cols[2].selectbox(
+                                        f"{mat_label} Brand",
+                                        brands,
+                                        key=f"{key_prefix}_{mat}_brand",
+                                        index=brands.index(
+                                            element_materials.get(key_prefix, {}).get(mat, {}).get("brand", brands[0])
+                                        ) if element_materials.get(key_prefix, {}).get(mat, {}).get("brand", brands[0]) in brands else 0
+                                    )
+                                else:
+                                    brand = "-"
+                                    cols[2].markdown("-")
+                                filtered_df = filtered_df[filtered_df["Brand"] == brand] if brand != "-" else filtered_df
                                 models = filtered_df["Model"].dropna().unique().tolist()
-                                model = cols[3].selectbox(
-                                    f"{mat_label} Model",
-                                    models,
-                                    key=f"{key_prefix}_{mat}_model",
-                                    index=models.index(
-                                        element_materials.get(key_prefix, {}).get(mat, {}).get("model", models[0])
-                                    ) if element_materials.get(key_prefix, {}).get(mat, {}).get("model", models[0]) in models else 0
-                                )
-                                filtered_df = filtered_df[filtered_df["Model"] == model]
+                                if models:
+                                    model = cols[3].selectbox(
+                                        f"{mat_label} Model",
+                                        models,
+                                        key=f"{key_prefix}_{mat}_model",
+                                        index=models.index(
+                                            element_materials.get(key_prefix, {}).get(mat, {}).get("model", models[0])
+                                        ) if element_materials.get(key_prefix, {}).get(mat, {}).get("model", models[0]) in models else 0
+                                    )
+                                else:
+                                    model = "-"
+                                    cols[3].markdown("-")
+                                filtered_df = filtered_df[filtered_df["Model"] == model] if model != "-" else filtered_df
                                 thicknesses = filtered_df["Thickness"].dropna().unique().tolist()
-                                thickness = cols[4].selectbox(
-                                    f"{mat_label} Thickness",
-                                    thicknesses,
-                                    key=f"{key_prefix}_{mat}_thickness",
-                                    index=thicknesses.index(
-                                        element_materials.get(key_prefix, {}).get(mat, {}).get("thickness", thicknesses[0])
-                                    ) if element_materials.get(key_prefix, {}).get(mat, {}).get("thickness", thicknesses[0]) in thicknesses else 0
-                                )
-                                filtered_df = filtered_df[filtered_df["Thickness"] == thickness]
-                                if not filtered_df.empty:
+                                if thicknesses:
+                                    thickness = cols[4].selectbox(
+                                        f"{mat_label} Thickness",
+                                        thicknesses,
+                                        key=f"{key_prefix}_{mat}_thickness",
+                                        index=thicknesses.index(
+                                            element_materials.get(key_prefix, {}).get(mat, {}).get("thickness", thicknesses[0])
+                                        ) if element_materials.get(key_prefix, {}).get(mat, {}).get("thickness", thicknesses[0]) in thicknesses else 0
+                                    )
+                                else:
+                                    thickness = "-"
+                                    cols[4].markdown("-")
+                                filtered_df = filtered_df[filtered_df["Thickness"] == thickness] if thickness != "-" else filtered_df
+                                if not filtered_df.empty and "Per sft Price" in filtered_df.columns:
                                     per_sft_price = float(filtered_df.iloc[0]["Per sft Price"])
                                     cols[5].info(f"₹{per_sft_price}/sft")
                                 else:
@@ -170,7 +180,6 @@ for room, elements in project_data.get("rooms", {}).items():
                     prop_labels = ["Type", "Grade", "Brand", "Model", "Thickness", "Price/sft"]
                     cols = st.columns(len(prop_labels))
                     for idx, (mat, mat_label) in enumerate(mat_labels):
-                        # For each material, collect all properties in a row
                         if mat == "laminate":
                             laminate_type = cols[0].selectbox(
                                 f"{mat_label} Type",
@@ -180,7 +189,9 @@ for room, elements in project_data.get("rooms", {}).items():
                                     element_materials.get(key_prefix, {}).get(mat, {}).get("type", list(laminate["Laminate"].keys())[0])
                                 ) if element_materials.get(key_prefix, {}).get(mat, {}).get("type", list(laminate["Laminate"].keys())[0]) in list(laminate["Laminate"].keys()) else 0
                             )
-                            # Grade, Brand, Model not used for laminate
+                            cols[1].markdown("-")
+                            cols[2].markdown("-")
+                            cols[3].markdown("-")
                             laminate_thickness = cols[4].selectbox(
                                 f"{mat_label} Thickness",
                                 list(laminate["Laminate"][laminate_type].keys()),
@@ -207,46 +218,62 @@ for room, elements in project_data.get("rooms", {}).items():
                             )
                             df = material_type_map[mat_type]
                             grades = df["Grade"].dropna().unique().tolist()
-                            grade = cols[1].selectbox(
-                                f"{mat_label} Grade",
-                                grades,
-                                key=f"{key_prefix}_{mat}_grade",
-                                index=grades.index(
-                                    element_materials.get(key_prefix, {}).get(mat, {}).get("grade", grades[0])
-                                ) if element_materials.get(key_prefix, {}).get(mat, {}).get("grade", grades[0]) in grades else 0
-                            )
-                            filtered_df = df[df["Grade"] == grade]
+                            if not grades or (mat_type == "MDF" and (len(grades) == 1 and (grades[0] == "" or pd.isna(grades[0])))):
+                                grade = "-"
+                                cols[1].markdown("-")
+                            else:
+                                grade = cols[1].selectbox(
+                                    f"{mat_label} Grade",
+                                    grades,
+                                    key=f"{key_prefix}_{mat}_grade",
+                                    index=grades.index(
+                                        element_materials.get(key_prefix, {}).get(mat, {}).get("grade", grades[0])
+                                    ) if element_materials.get(key_prefix, {}).get(mat, {}).get("grade", grades[0]) in grades else 0
+                                )
+                            filtered_df = df[df["Grade"] == grade] if grade != "-" else df
                             brands = filtered_df["Brand"].dropna().unique().tolist()
-                            brand = cols[2].selectbox(
-                                f"{mat_label} Brand",
-                                brands,
-                                key=f"{key_prefix}_{mat}_brand",
-                                index=brands.index(
-                                    element_materials.get(key_prefix, {}).get(mat, {}).get("brand", brands[0])
-                                ) if element_materials.get(key_prefix, {}).get(mat, {}).get("brand", brands[0]) in brands else 0
-                            )
-                            filtered_df = filtered_df[filtered_df["Brand"] == brand]
+                            if brands:
+                                brand = cols[2].selectbox(
+                                    f"{mat_label} Brand",
+                                    brands,
+                                    key=f"{key_prefix}_{mat}_brand",
+                                    index=brands.index(
+                                        element_materials.get(key_prefix, {}).get(mat, {}).get("brand", brands[0])
+                                    ) if element_materials.get(key_prefix, {}).get(mat, {}).get("brand", brands[0]) in brands else 0
+                                )
+                            else:
+                                brand = "-"
+                                cols[2].markdown("-")
+                            filtered_df = filtered_df[filtered_df["Brand"] == brand] if brand != "-" else filtered_df
                             models = filtered_df["Model"].dropna().unique().tolist()
-                            model = cols[3].selectbox(
-                                f"{mat_label} Model",
-                                models,
-                                key=f"{key_prefix}_{mat}_model",
-                                index=models.index(
-                                    element_materials.get(key_prefix, {}).get(mat, {}).get("model", models[0])
-                                ) if element_materials.get(key_prefix, {}).get(mat, {}).get("model", models[0]) in models else 0
-                            )
-                            filtered_df = filtered_df[filtered_df["Model"] == model]
+                            if models:
+                                model = cols[3].selectbox(
+                                    f"{mat_label} Model",
+                                    models,
+                                    key=f"{key_prefix}_{mat}_model",
+                                    index=models.index(
+                                        element_materials.get(key_prefix, {}).get(mat, {}).get("model", models[0])
+                                    ) if element_materials.get(key_prefix, {}).get(mat, {}).get("model", models[0]) in models else 0
+                                )
+                            else:
+                                model = "-"
+                                cols[3].markdown("-")
+                            filtered_df = filtered_df[filtered_df["Model"] == model] if model != "-" else filtered_df
                             thicknesses = filtered_df["Thickness"].dropna().unique().tolist()
-                            thickness = cols[4].selectbox(
-                                f"{mat_label} Thickness",
-                                thicknesses,
-                                key=f"{key_prefix}_{mat}_thickness",
-                                index=thicknesses.index(
-                                    element_materials.get(key_prefix, {}).get(mat, {}).get("thickness", thicknesses[0])
-                                ) if element_materials.get(key_prefix, {}).get(mat, {}).get("thickness", thicknesses[0]) in thicknesses else 0
-                            )
-                            filtered_df = filtered_df[filtered_df["Thickness"] == thickness]
-                            if not filtered_df.empty:
+                            if thicknesses:
+                                thickness = cols[4].selectbox(
+                                    f"{mat_label} Thickness",
+                                    thicknesses,
+                                    key=f"{key_prefix}_{mat}_thickness",
+                                    index=thicknesses.index(
+                                        element_materials.get(key_prefix, {}).get(mat, {}).get("thickness", thicknesses[0])
+                                    ) if element_materials.get(key_prefix, {}).get(mat, {}).get("thickness", thicknesses[0]) in thicknesses else 0
+                                )
+                            else:
+                                thickness = "-"
+                                cols[4].markdown("-")
+                            filtered_df = filtered_df[filtered_df["Thickness"] == thickness] if thickness != "-" else filtered_df
+                            if not filtered_df.empty and "Per sft Price" in filtered_df.columns:
                                 per_sft_price = float(filtered_df.iloc[0]["Per sft Price"])
                                 cols[5].info(f"₹{per_sft_price}/sft")
                             else:
@@ -261,10 +288,12 @@ for room, elements in project_data.get("rooms", {}).items():
                                 "rate": per_sft_price
                             }
 
-# Save per-element materials to project file
-project_data["element_materials"] = element_materials
-with open(project_file, "w") as f:
-    json.dump(project_data, f, indent=2)
+# --- Save per-element materials to DB only when user clicks Save ---
+st.markdown("---")
+if st.button("Save Materials"):
+    project_data["element_materials"] = element_materials
+    save_project(user, project, project_data)
+    st.success("Materials saved successfully!")
 
 # --- Calculate total areas and costs ---
 total_shutter_area = 0
@@ -355,7 +384,6 @@ with cost4:
 st.markdown("### Element-wise Cost Breakup")
 df_breakup = pd.DataFrame(elements_cost_breakup)
 if not df_breakup.empty:
-    # Show room, element, and material details for each element
     st.dataframe(
         df_breakup[
             [
