@@ -1,6 +1,7 @@
 streamlit
 pandas
 numpy
+openpyxl
 st_aggrid
 mysql-connector-python
 
