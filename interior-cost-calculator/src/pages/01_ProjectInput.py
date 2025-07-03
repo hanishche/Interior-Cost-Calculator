@@ -145,26 +145,111 @@ def main():
 
     # Calculate total area and sheets
     if st.button("Calculate & Save"):
-        total_area = 0
-        area_details = {}
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        for room, elements in room_data.items():
-            area_details[room] = {}
-            for el, dims in elements.items():
-                if el == "Bunk Bed":
-                    area_details[room][el] = {}
-                    for section, sec_dims in dims.items():
+        with st.spinner("Saving data..."):
+            total_area = 0
+            area_details = {}
+            conn = get_db_connection()
+            cursor = conn.cursor()
+
+            # Get project_id once
+            cursor.execute(
+                "SELECT id FROM Projects WHERE user_id=(SELECT id FROM Users WHERE username=%s) AND project_name=%s",
+                (user, project)
+            )
+            project_row = cursor.fetchone()
+            if not project_row:
+                st.error("Project not found in DB.")
+                st.stop()
+            project_id = project_row[0]
+
+            for room, elements in room_data.items():
+                area_details[room] = {}
+                # Get or insert room once per room
+                cursor.execute(
+                    "SELECT id FROM Rooms WHERE project_id=%s AND room_name=%s",
+                    (project_id, room)
+                )
+                room_row = cursor.fetchone()
+                if room_row:
+                    room_id = room_row[0]
+                else:
+                    cursor.execute(
+                        "INSERT INTO Rooms (project_id, room_name) VALUES (%s, %s)",
+                        (project_id, room)
+                    )
+                    room_id = cursor.lastrowid
+
+                for el, dims in elements.items():
+                    if el == "Bunk Bed":
+                        area_details[room][el] = {}
+                        for section, sec_dims in dims.items():
+                            # Calculate areas
+                            sa = shutter_area(sec_dims["height"], sec_dims["length"])
+                            sda = side_area(sec_dims["width"], sec_dims["height"])
+                            tba = top_bottom_area(sec_dims["length"], sec_dims["width"])
+                            bpa = back_panel_area(sec_dims["height"], sec_dims["length"])
+                            sha = shelf_area(sec_dims["num_shelves"], sec_dims["width"], sec_dims["length"])
+                            ta = ceil(sa + sda + tba + bpa + sha)
+                            area = ta
+                            total_area += area
+                            area_details[room][el][section] = {
+                                "shutter_area": sa,
+                                "side_area": sda,
+                                "top_bottom_area": tba,
+                                "back_panel_area": bpa,
+                                "shelf_area": sha,
+                                "total_area": ta
+                            }
+                            # 3. Upsert element for each section
+                            element_name = f"{el} - {section}"
+                            cursor.execute(
+                                "SELECT id FROM Elements WHERE room_id=%s AND element_name=%s",
+                                (room_id, element_name)
+                            )
+                            element_row = cursor.fetchone()
+                            if element_row:
+                                element_id = element_row[0]
+                                cursor.execute(
+                                    "UPDATE Elements SET height=%s, length=%s, width=%s, num_shelves=%s WHERE id=%s",
+                                    (sec_dims["height"], sec_dims["length"], sec_dims["width"], sec_dims["num_shelves"], element_id)
+                                )
+                            else:
+                                cursor.execute(
+                                    "INSERT INTO Elements (room_id, element_name, height, length, width, num_shelves) VALUES (%s, %s, %s, %s, %s, %s)",
+                                    (room_id, element_name, sec_dims["height"], sec_dims["length"], sec_dims["width"], sec_dims["num_shelves"])
+                                )
+                                element_id = cursor.lastrowid
+                            # 4. Upsert AreaDetails
+                            cursor.execute(
+                                "SELECT id FROM AreaDetails WHERE element_id=%s AND section_name=%s",
+                                (element_id, section)
+                            )
+                            area_row = cursor.fetchone()
+                            if area_row:
+                                cursor.execute(
+                                    "UPDATE AreaDetails SET shutter_area=%s, side_area=%s, top_bottom_area=%s, back_panel_area=%s, shelf_area=%s, total_area=%s WHERE element_id=%s AND section_name=%s",
+                                    (
+                                        sa, sda, tba, bpa, sha, ta, element_id, section
+                                    )
+                                )
+                            else:
+                                save_area_details(
+                                    element_id=element_id,
+                                    section_name=section,
+                                    area_info=area_details[room][el][section],
+                                    cursor=cursor
+                                )
+                    else:
                         # Calculate areas
-                        sa = shutter_area(sec_dims["height"], sec_dims["length"])
-                        sda = side_area(sec_dims["width"], sec_dims["height"])
-                        tba = top_bottom_area(sec_dims["length"], sec_dims["width"])
-                        bpa = back_panel_area(sec_dims["height"], sec_dims["length"])
-                        sha = shelf_area(sec_dims["num_shelves"], sec_dims["width"], sec_dims["length"])
+                        sa = shutter_area(dims["height"], dims["length"])
+                        sda = side_area(dims["width"], dims["height"])
+                        tba = top_bottom_area(dims["length"], dims["width"])
+                        bpa = back_panel_area(dims["height"], dims["length"])
+                        sha = shelf_area(dims["num_shelves"], dims["width"], dims["length"])
                         ta = ceil(sa + sda + tba + bpa + sha)
                         area = ta
                         total_area += area
-                        area_details[room][el][section] = {
+                        area_details[room][el] = {
                             "shutter_area": sa,
                             "side_area": sda,
                             "top_bottom_area": tba,
@@ -172,149 +257,50 @@ def main():
                             "shelf_area": sha,
                             "total_area": ta
                         }
-                        # 1. Get or insert project
-                        cursor.execute(
-                            "SELECT id FROM Projects WHERE user_id=(SELECT id FROM Users WHERE username=%s) AND project_name=%s",
-                            (user, project)
-                        )
-                        project_row = cursor.fetchone()
-                        if not project_row:
-                            st.error("Project not found in DB.")
-                            st.stop()
-                        project_id = project_row[0]
-                        # 2. Get or insert room
-                        cursor.execute(
-                            "SELECT id FROM Rooms WHERE project_id=%s AND room_name=%s",
-                            (project_id, room)
-                        )
-                        room_row = cursor.fetchone()
-                        if room_row:
-                            room_id = room_row[0]
-                        else:
-                            cursor.execute(
-                                "INSERT INTO Rooms (project_id, room_name) VALUES (%s, %s)",
-                                (project_id, room)
-                            )
-                            room_id = cursor.lastrowid
-                        # 3. Upsert element for each section
-                        element_name = f"{el} - {section}"
+                        # 3. Upsert element
                         cursor.execute(
                             "SELECT id FROM Elements WHERE room_id=%s AND element_name=%s",
-                            (room_id, element_name)
+                            (room_id, el)
                         )
                         element_row = cursor.fetchone()
                         if element_row:
                             element_id = element_row[0]
                             cursor.execute(
                                 "UPDATE Elements SET height=%s, length=%s, width=%s, num_shelves=%s WHERE id=%s",
-                                (sec_dims["height"], sec_dims["length"], sec_dims["width"], sec_dims["num_shelves"], element_id)
+                                (dims["height"], dims["length"], dims["width"], dims["num_shelves"], element_id)
                             )
                         else:
                             cursor.execute(
                                 "INSERT INTO Elements (room_id, element_name, height, length, width, num_shelves) VALUES (%s, %s, %s, %s, %s, %s)",
-                                (room_id, element_name, sec_dims["height"], sec_dims["length"], sec_dims["width"], sec_dims["num_shelves"])
+                                (room_id, el, dims["height"], dims["length"], dims["width"], dims["num_shelves"])
                             )
                             element_id = cursor.lastrowid
                         # 4. Upsert AreaDetails
                         cursor.execute(
-                            "SELECT id FROM AreaDetails WHERE element_id=%s AND section_name=%s",
-                            (element_id, section)
+                            "SELECT id FROM AreaDetails WHERE element_id=%s AND section_name IS NULL",
+                            (element_id,)
                         )
                         area_row = cursor.fetchone()
                         if area_row:
                             cursor.execute(
-                                "UPDATE AreaDetails SET shutter_area=%s, side_area=%s, top_bottom_area=%s, back_panel_area=%s, shelf_area=%s, total_area=%s WHERE element_id=%s AND section_name=%s",
+                                "UPDATE AreaDetails SET shutter_area=%s, side_area=%s, top_bottom_area=%s, back_panel_area=%s, shelf_area=%s, total_area=%s WHERE element_id=%s AND section_name IS NULL",
                                 (
-                                    sa, sda, tba, bpa, sha, ta, element_id, section
+                                    float(sa),
+                                    float(sda),
+                                    float(tba),
+                                    float(bpa),
+                                    float(sha),
+                                    float(ta),
+                                    int(element_id)
                                 )
                             )
                         else:
                             save_area_details(
                                 element_id=element_id,
-                                section_name=section,
-                                area_info=area_details[room][el][section],
+                                section_name=None,
+                                area_info=area_details[room][el],
                                 cursor=cursor
                             )
-                else:
-                    # Calculate areas
-                    sa = shutter_area(dims["height"], dims["length"])
-                    sda = side_area(dims["width"], dims["height"])
-                    tba = top_bottom_area(dims["length"], dims["width"])
-                    bpa = back_panel_area(dims["height"], dims["length"])
-                    sha = shelf_area(dims["num_shelves"], dims["width"], dims["length"])
-                    ta = ceil(sa + sda + tba + bpa + sha)
-                    area = ta
-                    total_area += area
-                    area_details[room][el] = {
-                        "shutter_area": sa,
-                        "side_area": sda,
-                        "top_bottom_area": tba,
-                        "back_panel_area": bpa,
-                        "shelf_area": sha,
-                        "total_area": ta
-                    }
-                    # 1. Get or insert project
-                    cursor.execute(
-                        "SELECT id FROM Projects WHERE user_id=(SELECT id FROM Users WHERE username=%s) AND project_name=%s",
-                        (user, project)
-                    )
-                    project_row = cursor.fetchone()
-                    if not project_row:
-                        st.error("Project not found in DB.")
-                        st.stop()
-                    project_id = project_row[0]
-                    # 2. Get or insert room
-                    cursor.execute(
-                        "SELECT id FROM Rooms WHERE project_id=%s AND room_name=%s",
-                        (project_id, room)
-                    )
-                    room_row = cursor.fetchone()
-                    if room_row:
-                        room_id = room_row[0]
-                    else:
-                        cursor.execute(
-                            "INSERT INTO Rooms (project_id, room_name) VALUES (%s, %s)",
-                            (project_id, room)
-                        )
-                        room_id = cursor.lastrowid
-                    # 3. Upsert element
-                    cursor.execute(
-                        "SELECT id FROM Elements WHERE room_id=%s AND element_name=%s",
-                        (room_id, el)
-                    )
-                    element_row = cursor.fetchone()
-                    if element_row:
-                        element_id = element_row[0]
-                        cursor.execute(
-                            "UPDATE Elements SET height=%s, length=%s, width=%s, num_shelves=%s WHERE id=%s",
-                            (dims["height"], dims["length"], dims["width"], dims["num_shelves"], element_id)
-                        )
-                    else:
-                        cursor.execute(
-                            "INSERT INTO Elements (room_id, element_name, height, length, width, num_shelves) VALUES (%s, %s, %s, %s, %s, %s)",
-                            (room_id, el, dims["height"], dims["length"], dims["width"], dims["num_shelves"])
-                        )
-                        element_id = cursor.lastrowid
-                    # 4. Upsert AreaDetails
-                    cursor.execute(
-                        "SELECT id FROM AreaDetails WHERE element_id=%s AND section_name IS NULL",
-                        (element_id,)
-                    )
-                    area_row = cursor.fetchone()
-                    if area_row:
-                        cursor.execute(
-                            "UPDATE AreaDetails SET shutter_area=%s, side_area=%s, top_bottom_area=%s, back_panel_area=%s, shelf_area=%s, total_area=%s WHERE element_id=%s AND section_name IS NULL",
-                            (
-                                sa, sda, tba, bpa, sha, ta, element_id
-                            )
-                        )
-                    else:
-                        save_area_details(
-                            element_id=element_id,
-                            section_name=None,
-                            area_info=area_details[room][el],
-                            cursor=cursor
-                        )
    
         # --- Save room_data to DB ---
         if user and project:
