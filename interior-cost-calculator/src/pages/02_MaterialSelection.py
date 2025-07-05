@@ -17,15 +17,13 @@ if st.button("🏠 Home"):
     st.session_state.pop("project", None)
     st.switch_page("main.py")
 
-# Add Back button to go to Project Input page
 if st.button("⬅️ Previous"):
     st.switch_page("pages/01_ProjectInput.py")
 
-# Add Back button to go to Summary page
 if st.button("Next ➡️"):
     st.switch_page("pages/03_Summary.py")
 
-# Load project data from DB
+# Load project data from JSON
 user = st.session_state.get("username")
 project = st.session_state.get("project")
 if not user or not project:
@@ -34,7 +32,7 @@ if not user or not project:
 
 project_data = load_project(user, project)
 if not project_data:
-    st.error("Project data not found in database.")
+    st.error("Project data not found.")
     st.stop()
 
 # --- Load existing materials if present ---
@@ -288,7 +286,7 @@ for room, elements in project_data.get("rooms", {}).items():
                                 "rate": per_sft_price
                             }
 
-# --- Save per-element materials to DB only when user clicks Save ---
+# --- Save per-element materials to JSON only when user clicks Save ---
 st.markdown("---")
 if st.button("Save Materials"):
     project_data["element_materials"] = element_materials

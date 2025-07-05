@@ -1,0 +1,1218 @@
+{
+  "projects": [
+    {
+      "materials": {
+        "shutter": {
+          "type": "MDF",
+          "brand": "Action Tesa",
+          "model": "Interior",
+          "thickness": "3.3MM",
+          "grade": "MDF",
+          "rate": 12.0
+        },
+        "carcus": {
+          "type": "Plywood",
+          "brand": "AustinPly",
+          "model": "Club Plus",
+          "thickness": "6MM",
+          "grade": "BWP",
+          "rate": 75.0
+        },
+        "laminate": {
+          "type": "Standard",
+          "thickness": "1mm",
+          "rate": 20
+        }
+      },
+      "rooms": {
+        "Master Bedroom": {
+          "Wardrobe": {
+            "length": 9.0,
+            "width": 2.0,
+            "height": 6.0,
+            "num_shelves": 5
+          },
+          "Loft": {
+            "length": 13.3,
+            "width": 2.0,
+            "height": 3.4,
+            "num_shelves": 1
+          }
+        },
+        "Kids Bedroom": {
+          "Wardrobe": {
+            "length": 8.0,
+            "width": 2.0,
+            "height": 6.0,
+            "num_shelves": 4
+          },
+          "Loft": {
+            "length": 12.8,
+            "width": 2.0,
+            "height": 3.4,
+            "num_shelves": 1
+          },
+          "Bunk Bed": {
+            "Bunk bed Lower": {
+              "length": 6.0,
+              "width": 6.0,
+              "height": 2.0,
+              "num_shelves": 1
+            },
+            "Bunk bed Upper": {
+              "length": 6.0,
+              "width": 4.0,
+              "height": 2.0,
+              "num_shelves": 1
+            },
+            "Bunk Bed Extra": {
+              "length": 1.0,
+              "width": 1.0,
+              "height": 0.0,
+              "num_shelves": 1
+            }
+          }
+        },
+        "Guest Bedroom": {
+          "Wardrobe": {
+            "length": 6.0,
+            "width": 2.0,
+            "height": 6.0,
+            "num_shelves": 3
+          },
+          "Loft": {
+            "length": 10.7,
+            "width": 2.0,
+            "height": 3.4,
+            "num_shelves": 1
+          },
+          "Pooja Unit": {
+            "length": 3.5,
+            "width": 3.5,
+            "height": 8.0,
+            "num_shelves": 3
+          }
+        },
+        "Kitchen": {
+          "Kitchen Lower": {
+            "length": 11.5,
+            "width": 2.5,
+            "height": 3.0,
+            "num_shelves": 5
+          },
+          "Kitchen Upper": {
+            "length": 11.5,
+            "width": 2.5,
+            "height": 3.0,
+            "num_shelves": 5
+          },
+          "Kitchen Side": {
+            "length": 3.0,
+            "width": 2.5,
+            "height": 3.0,
+            "num_shelves": 2
+          }
+        },
+        "Living": {
+          "TV Unit": {
+            "length": 8.0,
+            "width": 1.0,
+            "height": 1.0,
+            "num_shelves": 4
+          }
+        },
+        "Dining": {
+          "Crockery": {
+            "length": 8.0,
+            "width": 1.5,
+            "height": 8.0,
+            "num_shelves": 3
+          }
+        }
+      },
+      "area_details": {
+        "Master Bedroom": {
+          "Wardrobe": {
+            "shutter_area": 54.0,
+            "side_area": 24.0,
+            "top_bottom_area": 36.0,
+            "back_panel_area": 54.0,
+            "shelf_area": 90.0,
+            "total_area": 258.0
+          },
+          "Loft": {
+            "shutter_area": 45.22,
+            "side_area": 13.6,
+            "top_bottom_area": 53.2,
+            "back_panel_area": 45.22,
+            "shelf_area": 26.6,
+            "total_area": 184.0
+          }
+        },
+        "Kids Bedroom": {
+          "Wardrobe": {
+            "shutter_area": 48.0,
+            "side_area": 24.0,
+            "top_bottom_area": 32.0,
+            "back_panel_area": 48.0,
+            "shelf_area": 64.0,
+            "total_area": 216.0
+          },
+          "Loft": {
+            "shutter_area": 43.52,
+            "side_area": 13.6,
+            "top_bottom_area": 51.2,
+            "back_panel_area": 43.52,
+            "shelf_area": 25.6,
+            "total_area": 178.0
+          },
+          "Bunk Bed": {
+            "Bunk bed Lower": {
+              "shutter_area": 12.0,
+              "side_area": 24.0,
+              "top_bottom_area": 72.0,
+              "back_panel_area": 12.0,
+              "shelf_area": 36.0,
+              "total_area": 156.0
+            },
+            "Bunk bed Upper": {
+              "shutter_area": 12.0,
+              "side_area": 16.0,
+              "top_bottom_area": 48.0,
+              "back_panel_area": 12.0,
+              "shelf_area": 24.0,
+              "total_area": 112.0
+            },
+            "Bunk Bed Extra": {
+              "shutter_area": 0.0,
+              "side_area": 0.0,
+              "top_bottom_area": 2.0,
+              "back_panel_area": 0.0,
+              "shelf_area": 1.0,
+              "total_area": 3.0
+            }
+          }
+        },
+        "Guest Bedroom": {
+          "Wardrobe": {
+            "shutter_area": 36.0,
+            "side_area": 24.0,
+            "top_bottom_area": 24.0,
+            "back_panel_area": 36.0,
+            "shelf_area": 36.0,
+            "total_area": 156.0
+          },
+          "Loft": {
+            "shutter_area": 36.379999999999995,
+            "side_area": 13.6,
+            "top_bottom_area": 42.8,
+            "back_panel_area": 36.379999999999995,
+            "shelf_area": 21.4,
+            "total_area": 151.0
+          },
+          "Pooja Unit": {
+            "shutter_area": 28.0,
+            "side_area": 56.0,
+            "top_bottom_area": 24.5,
+            "back_panel_area": 28.0,
+            "shelf_area": 36.75,
+            "total_area": 174.0
+          }
+        },
+        "Kitchen": {
+          "Kitchen Lower": {
+            "shutter_area": 34.5,
+            "side_area": 15.0,
+            "top_bottom_area": 57.5,
+            "back_panel_area": 34.5,
+            "shelf_area": 143.75,
+            "total_area": 286.0
+          },
+          "Kitchen Upper": {
+            "shutter_area": 34.5,
+            "side_area": 15.0,
+            "top_bottom_area": 57.5,
+            "back_panel_area": 34.5,
+            "shelf_area": 143.75,
+            "total_area": 286.0
+          },
+          "Kitchen Side": {
+            "shutter_area": 9.0,
+            "side_area": 15.0,
+            "top_bottom_area": 15.0,
+            "back_panel_area": 9.0,
+            "shelf_area": 15.0,
+            "total_area": 63.0
+          }
+        },
+        "Living": {
+          "TV Unit": {
+            "shutter_area": 8.0,
+            "side_area": 2.0,
+            "top_bottom_area": 16.0,
+            "back_panel_area": 8.0,
+            "shelf_area": 32.0,
+            "total_area": 66.0
+          }
+        },
+        "Dining": {
+          "Crockery": {
+            "shutter_area": 64.0,
+            "side_area": 24.0,
+            "top_bottom_area": 24.0,
+            "back_panel_area": 64.0,
+            "shelf_area": 36.0,
+            "total_area": 212.0
+          }
+        }
+      },
+      "element_materials": {
+        "Master Bedroom|Wardrobe": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Master Bedroom|Loft": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "18MM",
+            "rate": 90.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kids Bedroom|Wardrobe": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kids Bedroom|Loft": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kids Bedroom|Bunk Bed|Bunk bed Lower": {
+          "shutter": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kids Bedroom|Bunk Bed|Bunk bed Upper": {
+          "shutter": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kids Bedroom|Bunk Bed|Bunk Bed Extra": {
+          "shutter": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "SAINIK 710",
+            "thickness": "19MM",
+            "rate": 110.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Guest Bedroom|Wardrobe": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Guest Bedroom|Loft": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Guest Bedroom|Pooja Unit": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "18MM",
+            "rate": 90.0
+          },
+          "carcus": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "18MM",
+            "rate": 90.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kitchen|Kitchen Lower": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kitchen|Kitchen Upper": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kitchen|Kitchen Side": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "SAINIK 710",
+            "thickness": "19MM",
+            "rate": 110.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Living|TV Unit": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "GreenPanel",
+            "model": "Plain\u00a0",
+            "thickness": "16MM",
+            "rate": 96.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Dining|Crockery": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        }
+      },
+      "house_type": "Apartment Flat",
+      "num_bedrooms": 3
+    },
+    {
+      "project_name": "Luxor 1510",
+      "created_at": "2025-07-05 22:20:45",
+      "last_modified": "2025-07-05 22:27:02",
+      "house_type": "Apartment Flat",
+      "num_bedrooms": 3,
+      "rooms": {
+        "Master Bedroom": {
+          "Wardrobe": {
+            "length": 9.0,
+            "width": 2.0,
+            "height": 7.0,
+            "num_shelves": 5
+          },
+          "Loft": {
+            "length": 13.3,
+            "width": 2.0,
+            "height": 2.5,
+            "num_shelves": 1
+          }
+        },
+        "Kids Bedroom": {
+          "Wardrobe": {
+            "length": 8.0,
+            "width": 2.0,
+            "height": 7.0,
+            "num_shelves": 4
+          },
+          "Loft": {
+            "length": 12.8,
+            "width": 2.0,
+            "height": 2.5,
+            "num_shelves": 1
+          },
+          "Bunk Bed": {
+            "Bunk bed Lower": {
+              "length": 6.0,
+              "width": 6.0,
+              "height": 2.0,
+              "num_shelves": 1
+            },
+            "Bunk bed Upper": {
+              "length": 6.0,
+              "width": 4.0,
+              "height": 2.0,
+              "num_shelves": 1
+            },
+            "Bunk Bed Extra": {
+              "length": 8.0,
+              "width": 4.0,
+              "height": 0.0,
+              "num_shelves": 0
+            }
+          }
+        },
+        "Guest Bedroom": {
+          "Wardrobe": {
+            "length": 6.0,
+            "width": 2.0,
+            "height": 7.0,
+            "num_shelves": 3
+          },
+          "Loft": {
+            "length": 10.7,
+            "width": 2.0,
+            "height": 2.5,
+            "num_shelves": 1
+          },
+          "Pooja Unit": {
+            "length": 3.5,
+            "width": 3.5,
+            "height": 8.0,
+            "num_shelves": 2
+          }
+        },
+        "Kitchen": {
+          "Kitchen Lower": {
+            "length": 11.5,
+            "width": 2.5,
+            "height": 3.0,
+            "num_shelves": 5
+          },
+          "Kitchen Upper": {
+            "length": 11.5,
+            "width": 2.5,
+            "height": 3.0,
+            "num_shelves": 5
+          },
+          "Kitchen Side": {
+            "length": 3.0,
+            "width": 2.5,
+            "height": 3.0,
+            "num_shelves": 2
+          }
+        },
+        "Living": {
+          "TV Unit": {
+            "length": 8.0,
+            "width": 1.0,
+            "height": 1.0,
+            "num_shelves": 2
+          }
+        },
+        "Dining": {
+          "Crockery": {
+            "length": 8.0,
+            "width": 2.0,
+            "height": 8.0,
+            "num_shelves": 3
+          }
+        }
+      },
+      "element_materials": {
+        "Master Bedroom|Wardrobe": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Master Bedroom|Loft": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kids Bedroom|Wardrobe": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kids Bedroom|Loft": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kids Bedroom|Bunk Bed|Bunk bed Lower": {
+          "shutter": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kids Bedroom|Bunk Bed|Bunk bed Upper": {
+          "shutter": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kids Bedroom|Bunk Bed|Bunk Bed Extra": {
+          "shutter": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Guest Bedroom|Wardrobe": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Guest Bedroom|Loft": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Guest Bedroom|Pooja Unit": {
+          "shutter": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kitchen|Kitchen Lower": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kitchen|Kitchen Upper": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Kitchen|Kitchen Side": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "Plywood",
+            "grade": "BWP",
+            "brand": "CENTURYPLY",
+            "model": "CLUB PRIME",
+            "thickness": "19MM",
+            "rate": 151.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Living|TV Unit": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        },
+        "Dining|Crockery": {
+          "shutter": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "carcus": {
+            "type": "HDHMR",
+            "grade": "HDHMR",
+            "brand": "Action Tesa",
+            "model": "Board",
+            "thickness": "16MM",
+            "rate": 77.0
+          },
+          "laminate": {
+            "type": "Standard",
+            "thickness": "1mm",
+            "rate": 20
+          }
+        }
+      },
+      "area_details": {
+        "Master Bedroom": {
+          "Wardrobe": {
+            "shutter_area": 63.0,
+            "side_area": 28.0,
+            "top_bottom_area": 36.0,
+            "back_panel_area": 63.0,
+            "shelf_area": 90.0,
+            "total_area": 280.0
+          },
+          "Loft": {
+            "shutter_area": 33.25,
+            "side_area": 10.0,
+            "top_bottom_area": 53.2,
+            "back_panel_area": 33.25,
+            "shelf_area": 26.6,
+            "total_area": 157.0
+          }
+        },
+        "Kids Bedroom": {
+          "Wardrobe": {
+            "shutter_area": 56.0,
+            "side_area": 28.0,
+            "top_bottom_area": 32.0,
+            "back_panel_area": 56.0,
+            "shelf_area": 64.0,
+            "total_area": 236.0
+          },
+          "Loft": {
+            "shutter_area": 32.0,
+            "side_area": 10.0,
+            "top_bottom_area": 51.2,
+            "back_panel_area": 32.0,
+            "shelf_area": 25.6,
+            "total_area": 151.0
+          },
+          "Bunk Bed": {
+            "Bunk bed Lower": {
+              "shutter_area": 12.0,
+              "side_area": 24.0,
+              "top_bottom_area": 72.0,
+              "back_panel_area": 12.0,
+              "shelf_area": 36.0,
+              "total_area": 156.0
+            },
+            "Bunk bed Upper": {
+              "shutter_area": 12.0,
+              "side_area": 16.0,
+              "top_bottom_area": 48.0,
+              "back_panel_area": 12.0,
+              "shelf_area": 24.0,
+              "total_area": 112.0
+            },
+            "Bunk Bed Extra": {
+              "shutter_area": 0.0,
+              "side_area": 0.0,
+              "top_bottom_area": 64.0,
+              "back_panel_area": 0.0,
+              "shelf_area": 0.0,
+              "total_area": 64.0
+            }
+          }
+        },
+        "Guest Bedroom": {
+          "Wardrobe": {
+            "shutter_area": 42.0,
+            "side_area": 28.0,
+            "top_bottom_area": 24.0,
+            "back_panel_area": 42.0,
+            "shelf_area": 36.0,
+            "total_area": 172.0
+          },
+          "Loft": {
+            "shutter_area": 26.75,
+            "side_area": 10.0,
+            "top_bottom_area": 42.8,
+            "back_panel_area": 26.75,
+            "shelf_area": 21.4,
+            "total_area": 128.0
+          },
+          "Pooja Unit": {
+            "shutter_area": 28.0,
+            "side_area": 56.0,
+            "top_bottom_area": 24.5,
+            "back_panel_area": 28.0,
+            "shelf_area": 24.5,
+            "total_area": 161.0
+          }
+        },
+        "Kitchen": {
+          "Kitchen Lower": {
+            "shutter_area": 34.5,
+            "side_area": 15.0,
+            "top_bottom_area": 57.5,
+            "back_panel_area": 34.5,
+            "shelf_area": 143.75,
+            "total_area": 286.0
+          },
+          "Kitchen Upper": {
+            "shutter_area": 34.5,
+            "side_area": 15.0,
+            "top_bottom_area": 57.5,
+            "back_panel_area": 34.5,
+            "shelf_area": 143.75,
+            "total_area": 286.0
+          },
+          "Kitchen Side": {
+            "shutter_area": 9.0,
+            "side_area": 15.0,
+            "top_bottom_area": 15.0,
+            "back_panel_area": 9.0,
+            "shelf_area": 15.0,
+            "total_area": 63.0
+          }
+        },
+        "Living": {
+          "TV Unit": {
+            "shutter_area": 8.0,
+            "side_area": 2.0,
+            "top_bottom_area": 16.0,
+            "back_panel_area": 8.0,
+            "shelf_area": 16.0,
+            "total_area": 50.0
+          }
+        },
+        "Dining": {
+          "Crockery": {
+            "shutter_area": 64.0,
+            "side_area": 32.0,
+            "top_bottom_area": 32.0,
+            "back_panel_area": 64.0,
+            "shelf_area": 48.0,
+            "total_area": 240.0
+          }
+        }
+      },
+      "project_id": "ff94435b-1465-437d-b6f4-4e729cf16a8f",
+      "username": "hanishche"
+    }
+  ]
+}

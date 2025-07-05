@@ -18,7 +18,7 @@ def room_type_selector(num_bedrooms):
     return selected_room_types
 
 def element_selector():
-    elements = ["Wardrobe", "Loft", "TV Unit", "Bunk Bed", "Bed", "Modular Kitchen", "Crockery", "Pooja unit"]
+    elements = ["Wardrobe","Dresser", "Loft", "TV Unit", "Bunk Bed", "Bed", "Modular Kitchen", "Crockery", "Pooja unit"]
     selected_elements = st.multiselect("Select Elements", elements)
     return selected_elements
 

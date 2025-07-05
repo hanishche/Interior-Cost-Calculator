@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-from utils.db import load_project, get_db_connection
+from utils.db import load_project
+
 
 st.set_page_config(initial_sidebar_state="collapsed")
 hide_sidebar_style = """
@@ -15,13 +16,11 @@ if st.button("🏠 Home"):
     st.session_state.pop("project", None)
     st.switch_page("main.py")
 
-
 if st.button("⬅️⬅️ Back to Add Elements"):
     st.session_state["edit_mode"] = True
     st.switch_page("pages/01_ProjectInput.py")
 
-
-# Load project data from DB
+# Load project data from JSON
 user = st.session_state.get("username")
 project = st.session_state.get("project")
 if not user or not project:
@@ -30,150 +29,157 @@ if not user or not project:
 
 project_data = load_project(user, project)
 if not project_data:
-    st.error("Project data not found in database.")
+    st.error("Project data not found.")
     st.stop()
 
 element_materials = project_data.get("element_materials", {})
 rooms = project_data.get("rooms", {})
-
-# --- Load area details from AreaDetails table ---
-conn = get_db_connection()
-cursor = conn.cursor(dictionary=True)
-
-# Get project_id
-cursor.execute(
-    "SELECT id FROM Projects WHERE user_id=(SELECT id FROM Users WHERE username=%s) AND project_name=%s",
-    (user, project)
-)
-project_row = cursor.fetchone()
-if not project_row:
-    st.error("Project not found in DB.")
-    st.stop()
-project_id = project_row["id"]
-
-# Get all elements for this project
-cursor.execute("""
-    SELECT e.id as element_id, e.element_name, e.height, e.length, e.width, e.num_shelves, r.room_name
-    FROM Elements e
-    JOIN Rooms r ON e.room_id = r.id
-    WHERE r.project_id = %s
-""", (project_id,))
-elements_db = cursor.fetchall()
-
-# Get all area details for these elements
-element_ids = [row["element_id"] for row in elements_db]
-if element_ids:
-    format_strings = ','.join(['%s'] * len(element_ids))
-    cursor.execute(
-        f"SELECT * FROM AreaDetails WHERE element_id IN ({format_strings})",
-        tuple(element_ids)
-    )
-    area_details_db = cursor.fetchall()
-else:
-    area_details_db = []
-
-# Build a lookup for area details by element_id and section_name
-area_lookup = {}
-for area in area_details_db:
-    key = (area["element_id"], area.get("section_name"))
-    area_lookup[key] = area
-
-# Build a lookup for element_id by (room, element_name)
-elementid_lookup = {}
-for row in elements_db:
-    elementid_lookup[(row["room_name"], row["element_name"])] = row["element_id"]
+area_details = project_data.get("area_details", {})
 
 elements_data = []
 total_area = 0
 total_cost = 0
 
-for row in elements_db:
-    room = row["room_name"]
-    el_name = row["element_name"]
-    height = row["height"]
-    length = row["length"]
-    width = row["width"]
-    num_shelves = row["num_shelves"]
-    element_id = row["element_id"]
+for room, elements in rooms.items():
+    for el_name, el in elements.items():
+        # Handle Bunk Bed sections
+        if el_name == "Bunk Bed" and isinstance(el, dict):
+            for section_name, section in el.items():
+                key_prefix = f"{room}|{el_name}|{section_name}"
+                area_info = area_details.get(room, {}).get(el_name, {}).get(section_name, {})
+                mat_data = element_materials.get(key_prefix, {})
+                shutter = mat_data.get("shutter", {})
+                carcus = mat_data.get("carcus", {})
+                laminate_ = mat_data.get("laminate", {})
 
-    # Try to split out section for Bunk Bed
-    if "Bunk Bed" in el_name and " - " in el_name:
-        el_base, section = el_name.split(" - ", 1)
-        key_prefix = f"{room}|{el_base}|{section}"
-        area_info = area_lookup.get((element_id, section), {})
-    else:
-        section = None
-        key_prefix = f"{room}|{el_name}"
-        area_info = area_lookup.get((element_id, None), {})
+                sa = area_info.get("shutter_area", 0)
+                sda = area_info.get("side_area", 0)
+                tba = area_info.get("top_bottom_area", 0)
+                bpa = area_info.get("back_panel_area", 0)
+                sha = area_info.get("shelf_area", 0)
+                ta = area_info.get("total_area", 0)
 
-    mat_data = element_materials.get(key_prefix, {})
-    shutter = mat_data.get("shutter", {})
-    carcus = mat_data.get("carcus", {})
-    laminate_ = mat_data.get("laminate", {})
+                shutter_rate = shutter.get("rate", 0)
+                carcus_rate = carcus.get("rate", 0)
+                laminate_rate = laminate_.get("rate", 0)
 
-    sa = area_info.get("shutter_area", 0)
-    sda = area_info.get("side_area", 0)
-    tba = area_info.get("top_bottom_area", 0)
-    bpa = area_info.get("back_panel_area", 0)
-    sha = area_info.get("shelf_area", 0)
-    ta = area_info.get("total_area", 0)
+                shutter_cost = sa * shutter_rate
+                carcus_cost = (sda + tba + bpa + sha) * carcus_rate
+                laminate_cost = ta * laminate_rate
+                el_total_cost = shutter_cost + carcus_cost + laminate_cost
 
-    shutter_rate = shutter.get("rate", 0)
-    carcus_rate = carcus.get("rate", 0)
-    laminate_rate = laminate_.get("rate", 0)
+                cost_per_sft = el_total_cost / ta if ta else 0
 
-    shutter_cost = sa * shutter_rate
-    carcus_cost = (sda + tba + bpa + sha) * carcus_rate
-    laminate_cost = sa * laminate_rate
-    el_total_cost = shutter_cost + carcus_cost + laminate_cost
+                factory_binding = 340 * section.get("length", 0) * section.get("height", 0)
+                carpenter = 300 * section.get("length", 0) * section.get("height", 0)
 
-    cost_per_sft = el_total_cost / ta if ta else 0
+                SHEET_SQFT = 32
+                total_sheets = ta / SHEET_SQFT if SHEET_SQFT else 0
 
-    factory_binding = 340 * length * height
-    carpenter = 300 * length * height
+                elements_data.append({
+                    "Room": room,
+                    "Element": f"{el_name} - {section_name}",
+                    "Height": section.get("height", 0),
+                    "Length": section.get("length", 0),
+                    "Width": section.get("width", 0),
+                    "No of Shelves": section.get("num_shelves", 0),
+                    "Shutter Material": " ".join([
+                        str(shutter.get("brand", "")),
+                        str(shutter.get("model", "")),
+                        str(shutter.get("grade", "")),
+                        str(shutter.get("thickness", ""))
+                    ]).strip(),
+                    "Carcus Material": " ".join([
+                        str(carcus.get("brand", "")),
+                        str(carcus.get("model", "")),
+                        str(carcus.get("grade", "")),
+                        str(carcus.get("thickness", ""))
+                    ]).strip(),
+                    "Laminate Type": " ".join([
+                        str(laminate_.get("material_type", "")),
+                        str(laminate_.get("brand", "")),
+                        str(laminate_.get("model", "")),
+                        str(laminate_.get("grade", "")),
+                        str(laminate_.get("thickness", ""))
+                    ]).strip(),
+                    "Total Sheets": round(total_sheets, 2),
+                    "Total Area (sft)": round(ta, 2),
+                    "Material Cost (₹)": round(el_total_cost, 2),
+                    "Cost per sft (₹)": round(cost_per_sft, 2),
+                    "Factory Binding (220+120 Install) (₹)": round(factory_binding, 2),
+                    "Carpenter (300) (₹)": round(carpenter, 2)
+                })
 
-    SHEET_SQFT = 32
-    total_sheets = ta / SHEET_SQFT if SHEET_SQFT else 0
+                total_area += ta
+                total_cost += el_total_cost
+        else:
+            key_prefix = f"{room}|{el_name}"
+            area_info = area_details.get(room, {}).get(el_name, {})
+            mat_data = element_materials.get(key_prefix, {})
+            shutter = mat_data.get("shutter", {})
+            carcus = mat_data.get("carcus", {})
+            laminate_ = mat_data.get("laminate", {})
 
-    elements_data.append({
-        "Room": room,
-        "Element": el_name,
-        "Height": height,
-        "Length": length,
-        "Width": width,
-        "No of Shelves": num_shelves,
-        "Shutter Material": " ".join([
-            str(shutter.get("brand", "")),
-            str(shutter.get("model", "")),
-            str(shutter.get("grade", "")),
-            str(shutter.get("thickness", ""))
-        ]).strip(),
-        "Carcus Material": " ".join([
-            str(carcus.get("brand", "")),
-            str(carcus.get("model", "")),
-            str(carcus.get("grade", "")),
-            str(carcus.get("thickness", ""))
-        ]).strip(),
-        "Laminate Type": " ".join([
-            str(laminate_.get("material_type", "")),
-            str(laminate_.get("brand", "")),
-            str(laminate_.get("model", "")),
-            str(laminate_.get("grade", "")),
-            str(laminate_.get("thickness", ""))
-        ]).strip(),
-        "Total Sheets": round(total_sheets, 2),
-        "Total Area (sft)": round(ta, 2),
-        "Material Cost (₹)": round(el_total_cost, 2),
-        "Cost per sft (₹)": round(cost_per_sft, 2),
-        "Factory Binding (220+120 Install) (₹)": round(factory_binding, 2),
-        "Carpenter (300) (₹)": round(carpenter, 2)
-    })
+            sa = area_info.get("shutter_area", 0)
+            sda = area_info.get("side_area", 0)
+            tba = area_info.get("top_bottom_area", 0)
+            bpa = area_info.get("back_panel_area", 0)
+            sha = area_info.get("shelf_area", 0)
+            ta = area_info.get("total_area", 0)
 
-    total_area += ta
-    total_cost += el_total_cost
+            shutter_rate = shutter.get("rate", 0)
+            carcus_rate = carcus.get("rate", 0)
+            laminate_rate = laminate_.get("rate", 0)
 
-cursor.close()
-conn.close()
+            shutter_cost = sa * shutter_rate
+            carcus_cost = (sda + tba + bpa + sha) * carcus_rate
+            laminate_cost = ta * laminate_rate
+            el_total_cost = shutter_cost + carcus_cost + laminate_cost
+
+            cost_per_sft = el_total_cost / ta if ta else 0
+
+            factory_binding = 340 * el.get("length", 0) * el.get("height", 0)
+            carpenter = 300 * el.get("length", 0) * el.get("height", 0)
+
+            SHEET_SQFT = 32
+            total_sheets = ta / SHEET_SQFT if SHEET_SQFT else 0
+
+            elements_data.append({
+                "Room": room,
+                "Element": el_name,
+                "Height": el.get("height", 0),
+                "Length": el.get("length", 0),
+                "Width": el.get("width", 0),
+                "No of Shelves": el.get("num_shelves", 0),
+                "Shutter Material": " ".join([
+                    str(shutter.get("brand", "")),
+                    str(shutter.get("model", "")),
+                    str(shutter.get("grade", "")),
+                    str(shutter.get("thickness", ""))
+                ]).strip(),
+                "Carcus Material": " ".join([
+                    str(carcus.get("brand", "")),
+                    str(carcus.get("model", "")),
+                    str(carcus.get("grade", "")),
+                    str(carcus.get("thickness", ""))
+                ]).strip(),
+                "Laminate Type": " ".join([
+                    str(laminate_.get("material_type", "")),
+                    str(laminate_.get("brand", "")),
+                    str(laminate_.get("model", "")),
+                    str(laminate_.get("grade", "")),
+                    str(laminate_.get("thickness", ""))
+                ]).strip(),
+                "Total Sheets": round(total_sheets, 2),
+                "Total Area (sft)": round(ta, 2),
+                "Material Cost (₹)": round(el_total_cost, 2),
+                "Cost per sft (₹)": round(cost_per_sft, 2),
+                "Factory Binding (220+120 Install) (₹)": round(factory_binding, 2),
+                "Carpenter (300) (₹)": round(carpenter, 2)
+            })
+
+            total_area += ta
+            total_cost += el_total_cost
 
 # Add Back button to go to Materials page
 if st.button("⬅️ Back to Materials"):
@@ -284,4 +290,3 @@ else:
     #     grouped[col] = grouped[col].astype(str)
 
     show_aggrid(df)
-

@@ -38,7 +38,7 @@ def project_selector():
             st.session_state["project"] = selected_project
             project_data = load_project(user, selected_project)
             if not project_data:
-                st.error("Project data not found in database.")
+                st.error("Project data not found.")
                 st.stop()
             has_materials = "element_materials" in project_data and bool(project_data["element_materials"])
             has_area = "area_details" in project_data and bool(project_data.get("area_details", {}))
@@ -47,7 +47,13 @@ def project_selector():
             else:
                 st.switch_page("pages/01_ProjectInput.py")
         if col2.button("Delete Project"):
-            st.warning("Delete functionality not implemented for DB version. Please implement if needed.")
+            # Remove project from JSON
+            from utils.db import _load_json, _save_json
+            data = _load_json()
+            data["projects"] = [p for p in data["projects"] if not (p.get("username") == user and p.get("project_name") == selected_project)]
+            _save_json(data)
+            st.success(f"Project '{selected_project}' deleted.")
+            st.rerun()
     else:
         st.info("No projects found. Add a new project to get started.")
 
@@ -62,7 +68,7 @@ def project_selector():
             else:
                 now = get_current_datetime()
                 data = {
-                    "name": new_project,
+                    "project_name": new_project,
                     "created_at": now,
                     "last_modified": now,
                     "house_type": house_type,
@@ -82,6 +88,7 @@ if not st.session_state.authenticated:
         username = st.text_input("Username", key="login_user")
         password = st.text_input("Password", type="password", key="login_pass")
         if st.button("Login"):
+            # User authentication is always performed using the database
             if authenticate_user(username, password):
                 st.session_state.authenticated = True
                 st.session_state.username = username
@@ -93,6 +100,7 @@ if not st.session_state.authenticated:
         new_username = st.text_input("New Username", key="reg_user")
         new_password = st.text_input("New Password", type="password", key="reg_pass")
         if st.button("Register"):
+            # User registration is always performed using the database
             if create_user(new_username, new_password):
                 st.success("Registration successful.")
             else:
