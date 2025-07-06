@@ -13,12 +13,12 @@ material_costs_mdf = material_costs_hdmr_mdf[material_costs_hdmr_mdf['Grade'] ==
 
 laminate={"Laminate": {
         "Standard": {
-            "1mm": 20
+            "0.8mm (Avg Price)": 32
         },
         "Premium": {
-            "1mm": 35
+            "1mm (Avg Price)": 65
         },
         "Luxury": {
-            "1mm": 60
+            "1.25mm (Avg Price)": 116
         }
     }}
