@@ -221,9 +221,12 @@ df = df[[col for col in cols_order if col in df.columns]]
 
 df["Final Cost with Factory (₹)"] = df["Material Cost (₹)"] + df["Factory Binding (220+120 Install) (₹)"]
 df["Final Cost with Carpentry (₹)"] = df["Material Cost (₹)"] + df["Carpenter (300) (₹)"]
+# Avoid division by zero in area calculation
+df['Area']=np.where(df['Height']==0,df['Length'] * 1, df['Length'] * df['Height'])
+
 
 cols_order = [
-    "Room", "Element", "Height", "Length", "Width", "No of Shelves",
+    "Room", "Element", "Height", "Length", "Width","Area", "No of Shelves",
     "Shutter Material", "Carcus Material", "Laminate Type",
     "Total Sheets", "Total Area (sft)", "Material Cost (₹)", "Cost per sft (₹)",
     "Factory Binding (220+120 Install) (₹)", "Carpenter (300) (₹)",
@@ -266,7 +269,7 @@ if group_by_room:
             "Total Sheets": "sum",
             "Total Area (sft)": "sum",
             "Material Cost (₹)": "sum",
-            "Cost per sft (₹)": "mean",
+            "Cost per sft (₹)": "sum",
             "Factory Binding (220+120 Install) (₹)": "sum",
             "Carpenter (300) (₹)": "sum"
         })
