@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 from utils.db import load_project
 
 
@@ -244,20 +245,31 @@ def show_aggrid(df):
     except:
         st.dataframe(df, use_container_width=True, hide_index=True)
 
+def add_total_row(dataframe, label="Total"):
+    if dataframe.empty:
+        return dataframe
+    total_row = {}
+    for col in dataframe.columns:
+        if dataframe[col].dtype in [np.float64, np.int64, float, int]:
+            total_row[col] = dataframe[col].sum()
+        else:
+            total_row[col] = label if col in ["Room", "Element"] else ""
+    return pd.concat([dataframe, pd.DataFrame([total_row])], ignore_index=True)
+
 if group_by_room:
     grouped = (
-    df.groupby("Room", as_index=False)
-    .agg({
-        "Shutter Material": "first",
-        "Carcus Material": "first",
-        "Laminate Type": "first",
-        "Total Sheets": "sum",
-        "Total Area (sft)": "sum",
-        "Material Cost (₹)": "sum",
-        "Cost per sft (₹)": "mean",
-        "Factory Binding (220+120 Install) (₹)": "sum",
-        "Carpenter (300) (₹)": "sum"
-    })
+        df.groupby("Room", as_index=False)
+        .agg({
+            "Shutter Material": "first",
+            "Carcus Material": "first",
+            "Laminate Type": "first",
+            "Total Sheets": "sum",
+            "Total Area (sft)": "sum",
+            "Material Cost (₹)": "sum",
+            "Cost per sft (₹)": "mean",
+            "Factory Binding (220+120 Install) (₹)": "sum",
+            "Carpenter (300) (₹)": "sum"
+        })
     )
     grouped["Final Cost with Factory (₹)"] = grouped["Material Cost (₹)"] + grouped["Factory Binding (220+120 Install) (₹)"]
     grouped["Final Cost with Carpentry (₹)"] = grouped["Material Cost (₹)"] + grouped["Carpenter (300) (₹)"]
@@ -266,27 +278,10 @@ if group_by_room:
     for col in grouped.select_dtypes(include='object').columns:
         grouped[col] = grouped[col].astype(str)
 
-    show_aggrid(grouped.drop(columns=["Factory Binding (220+120 Install) (₹)", "Carpenter (300) (₹)"], errors='ignore'))
+    # Add total row to grouped table
+    grouped_with_total = add_total_row(grouped, label="Total")
+    show_aggrid(grouped_with_total.drop(columns=["Factory Binding (220+120 Install) (₹)", "Carpenter (300) (₹)"], errors='ignore'))
 else:
-    # grouped = (
-    #     df.groupby("Element", as_index=False)
-    #     .agg({
-    #         "Shutter Material": "first",
-    #         "Carcus Material": "first",
-    #         "Laminate Type": "first",
-    #         "Total Sheets": "sum",
-    #         "Total Area (sft)": "sum",
-    #         "Material Cost (₹)": "sum",
-    #         "Cost per sft (₹)": "mean",
-    #         "Factory Binding (220+120 Install) (₹)": "sum",
-    #         "Carpenter (300) (₹)": "sum"
-    #     })
-    # )
-    # grouped["Final Cost with Factory (₹)"] = grouped["Material Cost (₹)"] + grouped["Factory Binding (220+120 Install) (₹)"]
-    # grouped["Final Cost with Carpentry (₹)"] = grouped["Material Cost (₹)"] + grouped["Carpenter (300) (₹)"]
-
-    # # Ensure all object columns are strings for AgGrid compatibility
-    # for col in grouped.select_dtypes(include='object').columns:
-    #     grouped[col] = grouped[col].astype(str)
-
-    show_aggrid(df)
+    # Add total row to summary df
+    df_with_total = add_total_row(df, label="Total")
+    show_aggrid(df_with_total)
