@@ -47,7 +47,9 @@ material_type_map = {
 }
 material_types = list(material_type_map.keys())
 
-element_materials = existing_materials.copy()
+if "element_materials" not in st.session_state:
+    st.session_state["element_materials"] = existing_materials.copy()
+element_materials = st.session_state["element_materials"]
 
 # --- Group/Ungroup Toggle ---
 group_by_room = st.toggle("Show Room-wise Details (Ungroup)", value=True)
@@ -91,6 +93,7 @@ for room, elements in project_data.get("rooms", {}).items():
                                     "thickness": laminate_thickness,
                                     "rate": laminate_rate
                                 }
+                                st.session_state["element_materials"] = element_materials
                             else:
                                 mat_type = cols[0].selectbox(
                                     f"{mat_label} Type",
@@ -171,6 +174,7 @@ for room, elements in project_data.get("rooms", {}).items():
                                     "thickness": thickness,
                                     "rate": per_sft_price
                                 }
+                                st.session_state["element_materials"] = element_materials
             else:
                 with st.expander(f"{el_name}", expanded=True):
                     key_prefix = f"{room}|{el_name}"
@@ -205,6 +209,7 @@ for room, elements in project_data.get("rooms", {}).items():
                                 "thickness": laminate_thickness,
                                 "rate": laminate_rate
                             }
+                            st.session_state["element_materials"] = element_materials
                         else:
                             mat_type = cols[0].selectbox(
                                 f"{mat_label} Type",
@@ -285,11 +290,12 @@ for room, elements in project_data.get("rooms", {}).items():
                                 "thickness": thickness,
                                 "rate": per_sft_price
                             }
+                            st.session_state["element_materials"] = element_materials
 
 # --- Save per-element materials to JSON only when user clicks Save ---
 st.markdown("---")
 if st.button("Save Materials"):
-    project_data["element_materials"] = element_materials
+    project_data["element_materials"] = st.session_state["element_materials"]
     save_project(user, project, project_data)
     st.success("Materials saved successfully!")
 

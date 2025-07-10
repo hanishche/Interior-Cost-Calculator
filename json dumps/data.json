@@ -748,8 +748,8 @@
           },
           "laminate": {
             "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "thickness": "0.8mm (Avg Price)",
+            "rate": 32
           }
         },
         "Master Bedroom|Loft": {
@@ -771,8 +771,8 @@
           },
           "laminate": {
             "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "thickness": "0.8mm (Avg Price)",
+            "rate": 32
           }
         },
         "Kids Bedroom|Wardrobe": {
@@ -794,8 +794,8 @@
           },
           "laminate": {
             "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "thickness": "0.8mm (Avg Price)",
+            "rate": 32
           }
         },
         "Kids Bedroom|Loft": {
@@ -816,9 +816,9 @@
             "rate": 151.0
           },
           "laminate": {
-            "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "type": "Premium",
+            "thickness": "1mm (Avg Price)",
+            "rate": 65
           }
         },
         "Kids Bedroom|Bunk Bed|Bunk bed Lower": {
@@ -840,8 +840,8 @@
           },
           "laminate": {
             "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "thickness": "0.8mm (Avg Price)",
+            "rate": 32
           }
         },
         "Kids Bedroom|Bunk Bed|Bunk bed Upper": {
@@ -863,8 +863,8 @@
           },
           "laminate": {
             "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "thickness": "0.8mm (Avg Price)",
+            "rate": 32
           }
         },
         "Kids Bedroom|Bunk Bed|Bunk Bed Extra": {
@@ -886,8 +886,8 @@
           },
           "laminate": {
             "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "thickness": "0.8mm (Avg Price)",
+            "rate": 32
           }
         },
         "Guest Bedroom|Wardrobe": {
@@ -909,8 +909,8 @@
           },
           "laminate": {
             "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "thickness": "0.8mm (Avg Price)",
+            "rate": 32
           }
         },
         "Guest Bedroom|Loft": {
@@ -932,8 +932,8 @@
           },
           "laminate": {
             "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "thickness": "0.8mm (Avg Price)",
+            "rate": 32
           }
         },
         "Guest Bedroom|Pooja Unit": {
@@ -955,8 +955,8 @@
           },
           "laminate": {
             "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "thickness": "0.8mm (Avg Price)",
+            "rate": 32
           }
         },
         "Kitchen|Kitchen Lower": {
@@ -977,9 +977,9 @@
             "rate": 151.0
           },
           "laminate": {
-            "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "type": "Premium",
+            "thickness": "1mm (Avg Price)",
+            "rate": 65
           }
         },
         "Kitchen|Kitchen Upper": {
@@ -1000,9 +1000,9 @@
             "rate": 151.0
           },
           "laminate": {
-            "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "type": "Premium",
+            "thickness": "1mm (Avg Price)",
+            "rate": 65
           }
         },
         "Kitchen|Kitchen Side": {
@@ -1023,9 +1023,9 @@
             "rate": 151.0
           },
           "laminate": {
-            "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "type": "Premium",
+            "thickness": "1mm (Avg Price)",
+            "rate": 65
           }
         },
         "Living|TV Unit": {
@@ -1047,8 +1047,8 @@
           },
           "laminate": {
             "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "thickness": "0.8mm (Avg Price)",
+            "rate": 32
           }
         },
         "Dining|Crockery": {
@@ -1070,8 +1070,8 @@
           },
           "laminate": {
             "type": "Standard",
-            "thickness": "1mm",
-            "rate": 20
+            "thickness": "0.8mm (Avg Price)",
+            "rate": 32
           }
         }
       },
